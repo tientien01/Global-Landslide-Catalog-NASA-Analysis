@@ -66,7 +66,7 @@ def advanced_nlp_cleaning(text):
 
     return " ".join(cleaned_tokens)
 
-# -------------------------------------------------------
+# -------- Từ event_description trích xuất ra cố fatalities và injuries ----------------
 WORD_NUMBERS = {
     "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
     "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
@@ -107,9 +107,8 @@ def normalize_number(n):
 
     return WORD_NUMBERS.get(n)
 
-# ============================================================
-#                       REGEX FIXED
-# ============================================================
+
+#--------------------- REGEX --------------------
 
 # Two separate numeric patterns with DIFFERENT group names
 NUM_FATAL = r"(?P<fnum>\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|dozens?|scores|hundreds|thousands|several|multiple|many|few|some)"
@@ -153,9 +152,6 @@ NO_ONE = re.compile(
     re.IGNORECASE
 )
 
-# ============================================================
-#                    MAIN EXTRACTION FUNCTION
-# ============================================================
 def extract_casualties(text):
     """Extract fatalities and injuries from text. Returns (fatalities, injuries)"""
     if text is None or (isinstance(text, float) and pd.isna(text)):
@@ -219,9 +215,8 @@ def extract_casualties(text):
     return fatalities, injuries
 
 
-# ================================
+
 # KIỂM TRA VỚI VÍ DỤ
-# ================================
 def test_extraction():
     test_cases = [
         "3 people were killed and 5 injured in the landslide",
@@ -244,7 +239,7 @@ def test_extraction():
     for test in test_cases:
         fatalities, injuries = extract_casualties(test)
         print(f"Text: {test[:50]}...")
-        print(f"  → Fatalities: {fatalities}, Injuries: {injuries}")
+        print(f"Fatalities: {fatalities}, Injuries: {injuries}")
         print("-" * 60)
 
 
