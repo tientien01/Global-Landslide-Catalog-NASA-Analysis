@@ -6,6 +6,11 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk import pos_tag
 
+import sys
+import os
+
+import config as cf
+import utils as ut 
 
 
 
@@ -66,96 +71,7 @@ def advanced_nlp_cleaning(text):
 
     return " ".join(cleaned_tokens)
 
-# -------------------------------------------------------
-WORD_NUMBERS = {
-    "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-    "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-    "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
-    "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18,
-    "nineteen": 19, "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
-    "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90,
-
-    "several": 3,
-    "multiple": 3,
-    "few": 3,
-    "a few": 3,
-    "some": 3,
-    "many": 10,
-    "dozens": 24,
-    "dozen": 12,
-    "scores": 40,
-    "hundreds": 200,
-    "thousands": 1000,
-}
-
-def normalize_number(n):
-    if not n:
-        return None
-    n = str(n).lower().strip().replace(",", "")
-
-    # Xử lý "a few" thành "few"
-    if n == "a few":
-        n = "few"
-    
-    if n.isdigit():
-        return int(n)
-
-    if "-" in n:
-        p = n.split("-")
-        if len(p) == 2 and p[0] in WORD_NUMBERS and p[1] in WORD_NUMBERS:
-            return WORD_NUMBERS[p[0]] + WORD_NUMBERS[p[1]]
-
-    return WORD_NUMBERS.get(n)
-
-# ============================================================
-#                       REGEX FIXED
-# ============================================================
-
-# Two separate numeric patterns with DIFFERENT group names
-NUM_FATAL = r"(?P<fnum>\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|dozens?|scores|hundreds|thousands|several|multiple|many|few|some)"
-NUM_INJ = r"(?P<inum>\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|dozens?|scores|hundreds|thousands|several|multiple|many|few|some)"
-
-fatal_kw = r"(?:killed|dead|died|fatality|fatalities|death|deaths)"
-inj_kw   = r"(?:injured|hurt|wounded|hospitalized|injuries)"
-
-# Combined: X killed and Y injured (FIXED group names)
-COMBINED = re.compile(
-    rf"{NUM_FATAL}\s*(?:people|persons|individuals)?\s*{fatal_kw}\s*(?:,|and|with)?\s*"
-    rf"{NUM_INJ}\s*(?:people|persons|individuals)?\s*{inj_kw}",
-    re.IGNORECASE
-)
-
-# Single fatality pattern
-FATAL = re.compile(
-    rf"(?:at least|around|about|approximately|some|as many as|up to|over|more than)?\s*"
-    rf"{NUM_FATAL}\s*(?:people|persons|individuals)?\s*(?:were|was|are|have been)?\s*{fatal_kw}",
-    re.IGNORECASE
-)
-
-# Single injury pattern
-INJ = re.compile(
-    rf"(?:at least|around|about|approximately|some|as many as|up to|over|more than)?\s*"
-    rf"{NUM_INJ}\s*(?:people|persons|individuals)?\s*(?:were|was|are|have been)?\s*{inj_kw}",
-    re.IGNORECASE
-)
-
-# "no casualties" patterns
-NO_CAS = re.compile(
-    r"\b(?:no\s+(?:casualties|fatalities|injuries|deaths?)|"
-    r"zero\s+(?:casualties|fatalities|injuries|deaths?)|"
-    r"without\s+(?:any\s+)?(?:casualties|fatalities|injuries|deaths?))\b",
-    re.IGNORECASE
-)
-
-# "no one was" patterns
-NO_ONE = re.compile(
-    r"\bno\s+(?:one|person|people)\s+(?:was|were)\s+(?:killed|dead|injured|hurt|wounded)\b",
-    re.IGNORECASE
-)
-
-# ============================================================
-#                    MAIN EXTRACTION FUNCTION
-# ============================================================
+# -------- Từ event_description trích xuất ra cố fatalities và injuries ----------------
 def extract_casualties(text):
     """Extract fatalities and injuries from text. Returns (fatalities, injuries)"""
     if text is None or (isinstance(text, float) and pd.isna(text)):
@@ -164,11 +80,11 @@ def extract_casualties(text):
     text = str(text)
     
     # Check for "no casualties" first
-    if NO_CAS.search(text):
+    if cf.NO_CAS.search(text):
         return 0, 0
     
     # Check for "no one was"
-    no_one_match = NO_ONE.search(text)
+    no_one_match = cf.NO_ONE.search(text)
     if no_one_match:
         text_part = no_one_match.group()
         if 'killed' in text_part or 'dead' in text_part:
@@ -180,11 +96,11 @@ def extract_casualties(text):
     injuries = None
     
     # ---- COMBINED PATTERN ----
-    m = COMBINED.search(text)
+    m = cf.COMBINED.search(text)
     if m:
         try:
-            fatalities = normalize_number(m.group("fnum"))
-            injuries = normalize_number(m.group("inum"))
+            fatalities = ut.normalize_number(m.group("fnum"))
+            injuries = ut.normalize_number(m.group("inum"))
             if fatalities is not None and injuries is not None:
                 return fatalities, injuries
         except (IndexError, KeyError):
@@ -193,15 +109,15 @@ def extract_casualties(text):
     # ---- INDIVIDUAL PATTERNS ----
     # Try fatalities
     if fatalities is None:
-        m = FATAL.search(text)
+        m = cf.FATAL.search(text)
         if m:
-            fatalities = normalize_number(m.group("fnum"))
+            fatalities = ut.normalize_number(m.group("fnum"))
     
     # Try injuries
     if injuries is None:
-        m = INJ.search(text)
+        m = cf.INJ.search(text)
         if m:
-            injuries = normalize_number(m.group("inum"))
+            injuries = ut.normalize_number(m.group("inum"))
     
     # Special case: "X people" without explicit keyword
     # Try to find patterns like "11 villagers buried"
@@ -214,14 +130,13 @@ def extract_casualties(text):
         )
         m = people_pattern.search(text)
         if m:
-            fatalities = normalize_number(m.group(1))
+            fatalities = ut.normalize_number(m.group(1))
     
     return fatalities, injuries
 
 
-# ================================
+
 # KIỂM TRA VỚI VÍ DỤ
-# ================================
 def test_extraction():
     test_cases = [
         "3 people were killed and 5 injured in the landslide",
@@ -244,7 +159,7 @@ def test_extraction():
     for test in test_cases:
         fatalities, injuries = extract_casualties(test)
         print(f"Text: {test[:50]}...")
-        print(f"  → Fatalities: {fatalities}, Injuries: {injuries}")
+        print(f"Fatalities: {fatalities}, Injuries: {injuries}")
         print("-" * 60)
 
 
