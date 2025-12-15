@@ -33,7 +33,7 @@ def clean_text(text):
     # Xóa URL
     text = re.sub(r'http\S+', '', text)
     # Xóa ký tự không phải chữ cái hoặc số (giữ lại khoảng trắng)
-    text = re.sub(r'[^a-z0-9\s]', ' ', text)
+    text = re.sub(r'[^a-z0-9à-ỹ\s]', ' ', text)
     # Xóa khoảng trắng thừa
     text = re.sub(r'\s+', ' ', text).strip()
     return text
@@ -162,6 +162,24 @@ def test_extraction():
         print(f"Fatalities: {fatalities}, Injuries: {injuries}")
         print("-" * 60)
 
+#=================================
+#        Classification
+#=================================
+
+def categorize_fatality(fatality_count):
+    if pd.isna(fatality_count):
+        return 'unknown'
+    
+    if fatality_count == 0:
+        return 'no_fatalities'          # Lớp 0: Không có thương vong
+    elif 1 <= fatality_count <= 10:
+        return 'minor_incident'         # Lớp 1: Sự cố nhỏ
+    elif 11 <= fatality_count <= 100:
+        return 'moderate_incident'      # Lớp 2: Sự cố trung bình
+    elif 101 <= fatality_count <= 1000:
+        return 'serious_disaster'       # Lớp 3: Thảm họa nghiêm trọng
+    else:
+        return 'major_catastrophe'      # Lớp 4: Thảm họa thảm khốc (>50 người)
 
 
 
