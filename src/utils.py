@@ -1,4 +1,6 @@
 import pandas as pd
+import reverse_geocoder as rg
+import pycountry
 
 import config as cf
 
@@ -29,4 +31,15 @@ def normalize_number(n):
             return cf.WORD_NUMBERS[p[0]] + cf.WORD_NUMBERS[p[1]]
 
     return cf.WORD_NUMBERS.get(n)
+
+# Hàm phụ trợ để lấy tên đầy đủ từ mã quốc gia
+def get_full_country_name(code):
+    try:
+        # pycountry.countries.get(alpha_2='VN') -> Country(alpha_2='VN', name='Viet Nam', ...)
+        country = pycountry.countries.get(alpha_2=code)
+        if country:
+            return country.name
+    except:
+        pass
+    return 'unknown' # Trả về unknown nếu không tìm thấy
 

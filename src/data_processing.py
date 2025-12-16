@@ -180,6 +180,37 @@ def categorize_fatality(fatality_count):
         return 'serious_disaster'       # Lớp 3: Thảm họa nghiêm trọng
     else:
         return 'major_catastrophe'      # Lớp 4: Thảm họa thảm khốc (>50 người)
+    
+
+#=================================
+#        LOCATION FILLING
+#=================================
+def fill_missing_locations(row):
+    # Chỉ xử lý nếu thiếu Country hoặc Admin Division VÀ có Tọa độ
+    if (pd.isna(row['country_name']) or row['country_name'] == 'unknown' or 
+        pd.isna(row['admin_division_name']) or row['admin_division_name'] == 'unknown'):
+        
+        # Kiểm tra tọa độ hợp lệ (Khác 0 và không NaN)
+        if pd.notna(row['latitude']) and pd.notna(row['longitude']) and row['latitude'] != 0:
+            try:
+                coords = (row['latitude'], row['longitude'])
+                results = rg.search(coords, mode=1) 
+                
+                if results:
+                    location_info = results[0]
+                    
+                    # Cập nhật Country nếu đang thiếu
+                    if pd.isna(row['country_name']) or row['country_name'] == 'unknown':
+                        cc_code = location_info['cc'] # Lấy mã 'VN'
+                        # --- ĐOẠN MỚI: CHUYỂN MÃ THÀNH TÊN ---
+                        row['country_name'] = get_full_country_name(cc_code)
+                    
+                    # Cập nhật Admin Division (Tỉnh/Bang) nếu đang thiếu
+                    if pd.isna(row['admin_division_name']) or row['admin_division_name'] == 'unknown':
+                        row['admin_division_name'] = location_info['admin1']
+            except:
+                pass
+    return row
 
 
 
