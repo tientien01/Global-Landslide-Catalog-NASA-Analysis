@@ -18,12 +18,13 @@ Dự án tập trung giải quyết 5 câu hỏi lớn:
 1. Sạt lở có phải là một hiểm họa có tính quy luật không? Quy luật phân bố theo không gian và thời gian như thế nào?
 2. Sự phân bố sạt lở phản ánh chính xác nguy cơ tự nhiên hay bị ảnh hưởng bởi khả năng quan sát?
 3. Mối quan hệ nhân - quả trong thảm họa sạt lở đất là gì? Các loại hình và nguyên nhân sạt lở cụ thể nào, dẫn đến hậu quả nghiêm trọng nhất về mặt con người, và chúng phân bố ở đâu?
-4. <điền>
-5. <điền>
+4. Trong các đơn vị hành chính có dân số cao, những tháng nào ghi nhận nhiều vụ sạt lở nhất và các vụ sạt lở trong những tháng này gây ra mức độ thiệt hại về con người (tử vong và bị thương) ra sao?
+5. Dựa trên các đặc điểm về nguyên nhân, thời gian và bối cảnh địa lý, liệu có thể xây dựng mô hình học máy để phân loại và cảnh báo sớm khả năng gây thương vong (tử vong hoặc bị thương) của một vụ sạt lở không?
 ## 4. Tóm tắt kết quả chính
 * **Quy luật thời gian:** Sạt lở tăng mạnh theo chu kỳ khí hậu cực đoan (ENSO) và có tính mùa vụ rõ rệt theo từng vùng khí hậu.
 * **Thiên lệch báo cáo:** Phát hiện sự "nhiễu" dữ liệu tại các nước phát triển (như Mỹ). Số vụ cao tại đây phản ánh năng lực báo cáo tốt hơn là nguy cơ tự nhiên thực tế so với khu vực Himalaya hay Andes.
-* **Kịch bản tử thần:** Xác định được kịch bản "Mưa lớn + Lũ bùn (Mudslide)" là tác nhân gây thương vong lớn nhất tại các vùng nhiệt đới như Nam Mỹ và Nam Á. (sửa lại sau)
+* **Nguyên nhân chết người:** Xác định được kịch bản "Mưa lớn + Lũ bùn (Mudslide)" là tác nhân gây thương vong lớn nhất tại các vùng nhiệt đới như Nam Mỹ và Nam Á.
+* **Dữ liệu cho thấy một nghịch lý:** trong khi tháng 8 dẫn đầu về số lượng vụ việc, thì tháng 1 lại là thời điểm của những thảm họa khốc liệt nhất với tỷ lệ tử vong trên mỗi vụ cao vượt trội. Về mặt địa lý, Nam Á đứng đầu thế giới về thiệt hại về người bất chấp tần suất xảy ra thấp hơn Bắc Mỹ, minh chứng cho mức độ tổn thương cộng đồng nghiêm trọng tại khu vực này.
 
 ## 5. Cấu trúc thư mục
 ```bash
