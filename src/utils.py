@@ -1,10 +1,9 @@
 import pandas as pd
-import reverse_geocoder as rg
 import pycountry
 
-import config as cf
-
 def fix_encoding(text):
+    """Sửa font 
+    """
     if pd.isna(text) or not isinstance(text, str):
         return text
     try:
@@ -15,6 +14,10 @@ def fix_encoding(text):
 
 # Hàm phụ trợ để lấy tên đầy đủ từ mã quốc gia
 def get_full_country_name(code):
+    """Từ mã quốc gia viết thành tên đầy đủ
+ 
+    """
+    
     try:
         # pycountry.countries.get(alpha_2='VN') -> Country(alpha_2='VN', name='Viet Nam', ...)
         country = pycountry.countries.get(alpha_2=code)
