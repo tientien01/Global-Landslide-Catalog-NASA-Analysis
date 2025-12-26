@@ -1,8 +1,6 @@
 import pandas as pd
-import re
 import reverse_geocoder as rg
-
-import utils as ut 
+from src import utils as ut
 
 
 
@@ -10,25 +8,12 @@ import utils as ut
 #              TEXT
 #=================================
 def clean_text(text):
-    """Basic clean text
+    # Nếu là giá trị rỗng (NaN) thì trả về 'unknown'
+    if pd.isna(text):
+        return "unknown"
     
-    Keyword arguments:
-    argument -- description
-    Return: return_description
-
-    Dùng để xoá các từ cơ bản, chuẩn hoá từ để phân tích eda
-    """
-    
-    if pd.isna(text): 
-        return ""
-    text = str(text).lower()
-    # Xóa URL
-    text = re.sub(r'http\S+', '', text)
-    # Xóa ký tự không phải chữ cái hoặc số (giữ lại khoảng trắng)
-    text = re.sub(r'[^a-z0-9à-ỹ\s]', ' ', text)
-    # Xóa khoảng trắng thừa
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text
+    # Chuyển về chữ thường và xoá khoảng trắng thừa ở 2 đầu
+    return str(text).lower().strip()
 
 
 #=================================
@@ -65,5 +50,51 @@ def fill_missing_locations(row):
                 pass
     return row
 
+#=================================
+#  CLIMATE ZONE CLASSIFICATION
+#=================================
+def get_5_climate_zones(lat):
+    # Trả về unknown nếu không có toạ độ
+    if pd.isna(lat): 
+        return 'unknown'
+    
+    # Lấy trị tuyệt đối để tính chung cho cả Bắc và Nam bán cầu
+    abs_lat = abs(lat)
+    
+    if abs_lat <= 23.5:
+        return 'tropical'      # 0 - 23.5
+    elif abs_lat <= 35:
+        return 'subtropical'   # 23.5 - 35
+    elif abs_lat <= 60:
+        return 'temperate'     # 35 - 60
+    elif abs_lat <= 66.5:
+        return 'subpolar'      # 60 - 66.5
+    else:
+        return 'polar'         # > 66.5
 
+def get_geo_region(row):
+    lat = row['latitude']
+    lon = row['longitude']
+    
+    # Nếu thiếu toạ độ thì trả về unknown
+    if pd.isna(lat) or pd.isna(lon):
+        return 'unknown'
 
+    # Châu Mỹ
+    if lon < -30:
+        if lat > 8:
+            return 'north_america'  # Bao gồm Canada, Mỹ, Mexico, Trung Mỹ và Caribbean
+        else:
+            return 'south_america'   # Từ Colombia trở xuống
+            
+    # Châu Âu và Phi
+    elif lon < 60:
+        if lat > 30: return 'europe'
+        else: return 'africa'
+            
+    # Châu Á và úc 
+    else:
+        if lon < 95: return 'south_asia'
+        else:
+            if lat > 25: return 'east_asia'
+            else: return 'se_asia_oceania' # ĐNA và Úc 

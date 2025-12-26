@@ -1,8 +1,5 @@
 import pandas as pd
-import reverse_geocoder as rg
 import pycountry
-
-import config as cf
 
 def fix_encoding(text):
     if pd.isna(text) or not isinstance(text, str):
