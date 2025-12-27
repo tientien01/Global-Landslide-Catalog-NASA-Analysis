@@ -4,8 +4,8 @@
 Dự án tập trung vào việc khám phá và phân tích tập dữ liệu sạt lở đất toàn cầu của NASA để hiểu rõ các quy luật về thời gian, không gian và cơ chế nhân quả. Mục tiêu cuối cùng là xác định các kịch bản rủi ro cao và xây dựng mô hình dự báo nhằm giảm thiểu thiệt hại về người và tài sản.
 
 * **Thành viên thực hiện:** 
-    - Võ Ngọc Tiến (23120370)
-    - Mai Đình Trí (23120377)
+    - Võ Ngọc Tiến (MSSV: 23120370)
+    - Mai Đình Trí (MSSV: 23120377)
 * **Tên nhóm:** Magic Family 
 
 ## 2. Nguồn và Mô tả dữ liệu
@@ -24,11 +24,11 @@ Dự án tập trung giải quyết 5 câu hỏi lớn:
 * **Quy luật thời gian:** Sạt lở tăng mạnh theo chu kỳ khí hậu cực đoan (ENSO) và có tính mùa vụ rõ rệt theo từng vùng khí hậu.
 * **Thiên lệch báo cáo:** Phát hiện sự "nhiễu" dữ liệu tại các nước phát triển (như Mỹ). Số vụ cao tại đây phản ánh năng lực báo cáo tốt hơn là nguy cơ tự nhiên thực tế so với khu vực Himalaya hay Andes.
 * **Nguyên nhân chết người:** Xác định được kịch bản "Mưa lớn + Lũ bùn (Mudslide)" là tác nhân gây thương vong lớn nhất tại các vùng nhiệt đới như Nam Mỹ và Nam Á.
-* **Dữ liệu cho thấy một nghịch lý:** trong khi tháng 8 dẫn đầu về số lượng vụ việc, thì tháng 1 lại là thời điểm của những thảm họa khốc liệt nhất với tỷ lệ tử vong trên mỗi vụ cao vượt trội. Về mặt địa lý, Nam Á đứng đầu thế giới về thiệt hại về người bất chấp tần suất xảy ra thấp hơn Bắc Mỹ, minh chứng cho mức độ tổn thương cộng đồng nghiêm trọng tại khu vực này.
-
+* **Dữ liệu cho thấy một nghịch lý:** Khi xét các khu vực hành chính có dân số cao thì phát hiện ra được dù Tháng 7 là tháng ghi nhận nhiều vụ sạt lở nhất nhưng số lượng thương vong không phải là cao nhất. Bên cạnh đó, trước khi phân tích giả thuyết chung thường cho rằng mùa mưa (tháng 6-8) sẽ nguy hiểm về mọi mặt nhưng sự thật là Tháng 1 ghi nhận số người thương vong cao thứ 2 dù cho số lượng vụ không nhiều.
+* **Khả năng xây dựng mô hình:** Việc xây dựng mô hình học máy là hoàn toàn khả thi và đạt độ tin cậy cao trong việc đánh giá rủi ro thương vong. Mô hình đã chứng minh được khả năng phân loại tốt giữa các vụ sạt lở "có thương vong" và "không thương vong".
 ## 5. Cấu trúc thư mục
 ```bash
-NASA_Landslide_Project/
+Global-Landslide-Catalog-NASA-Analysis/
 ├── data/
 │   ├── raw/                          
 │   │   └── Global_Landslide_Catalog_Export.csv
@@ -37,11 +37,9 @@ NASA_Landslide_Project/
 ├── notebooks/                        
 │   ├── 01_data_collection.ipynb      # Thu thập dữ liệu
 │   ├── 02_data_exploration.ipynb     # Khám phá và làm sạch dữ liệu ban đầu
-│   ├── 04_eda_visualization.ipynb    # Phân tích sâu và trực quan hóa (EDA)
-│   └── 05_modeling.ipynb             # Xây dựng mô hình dự báo
+│   └── 03_data_analysis.ipynb        # Đặt câu hỏi, phân tích trả lời câu hỏi, xây dựng mô hình dự báo
 ├── src/                              # Các module mã nguồn hỗ trợ
 │   ├── __init__.py
-│   ├── config.py                     # Định nghĩa hằng số và đường dẫn dữ liệu
 │   ├── data_processing.py            # Chứa các hàm xử lý dữ liệu (tiền xử lý)
 │   └── utils.py                      # Các hàm tiện ích (sửa lỗi font, định dạng,...)                          
 ├── README.md                         
@@ -80,16 +78,16 @@ pip install -r requirements.txt
 ### Bước 4: Thứ tự Thực thi các Notebook
 Mở Jupyter Notebook hoặc VS Code, chọn Kernel **"Python (NASA Project)"** và chạy các tệp theo đúng thứ tự logic để đảm bảo dữ liệu được xử lý tuần tự:
 
-1. **`01_data_collection.ipynb`**: Tải dữ liệu gốc từ nguồn NASA về thư mục `data/raw/`.
-2. **`02_data_exploration.ipynb`**: Làm sạch dữ liệu, sửa lỗi font chữ và xử lý các giá trị thiếu.
-3. **`04_eda_visualization.ipynb`**: Thực hiện phân tích trực quan hóa để trích xuất các quy luật sạt lở (Yêu cầu dữ liệu từ bước 2).
-4. **`05_modeling.ipynb`**: Xây dựng và đánh giá các mô hình dự báo Machine Learning.
+1. **`01_data_collection.ipynb`**: Tìm nguồn dữ liệu thu thập sẵn, một chủ đề thực tế.
+2. **`02_data_exploration.ipynb`**: Khám phá sơ bộ tập dữ liệu và tiền xử lý sơ bộ.
+3. **`03_data_analysis.ipynb`**: Đặt câu hỏi và trả lời, xây dựng mô hình dự báo, tóm tắt dự án.  
 
 > **Mẹo nhỏ:** 
 > - Trước khi lưu hoặc gửi tệp Notebook cho cộng sự, vui lòng chọn **Cell > All Output > Clear** để giảm dung lượng file và tránh xung đột khi gộp mã nguồn trên Git.
 > - Phiên bản tối thiểu Python của bạn nên là `Python 3.11` trở lên.
 
 ## 7. Thư viện sử dụng
+Bên dưới là các thư viện sử dụng chính:
 * `pandas`, `numpy`: Xử lý dữ liệu.
 * `matplotlib`, `seaborn`, `plotly`: Trực quan hóa dữ liệu.
 * `scikit-learn`: Xây dựng mô hình học máy.
